@@ -1,7 +1,7 @@
 const  validateZip = (req, res, next) => {
   
   const zip = req.params.zip
-  const invalidMessage = `${zip} is invalid!`
+  const invalidMessage = `Zip (${zip}) is invalid!`
 
   if (isNaN(zip)) {
     next(invalidMessage)

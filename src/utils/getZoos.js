@@ -11,14 +11,14 @@ const zoos = {
   ],
   "07502": [],
   10460: ["WILDLIFE CONSERVATION SOCIETY, Bronx, New York"],
-};
-
-function getZoos(zip = "all") {
-  if (zip === "all") {
-    return Object.values(zoos).flat();
-  }
-
-  return zoos[zip];
 }
 
-module.exports = getZoos;
+const getZoos = (zip = "all") => {
+  if (zip === "all") {
+    return Object.values(zoos).flat()
+  }
+
+  return zoos[zip]
+}
+
+module.exports = getZoos

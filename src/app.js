@@ -8,22 +8,22 @@ const getZoos = require("./utils/getZoos")
 const morgan = require("morgan")
 const validateZip = require("./middleware/validateZip")
 
-
-// make three routes:
-
-// /check/:zip to check zip codes. require 5 chars, numbers only, use validateZip.js in middleware
-// return message saying where the zip code matches the records
-
-// /zoos/:zip call getZoos(), pass in the zip code from route parameters
-// return zoo list separated by semicolons
-
-// /zoos/all require admin query & value set to true. use getZoos() with no arguments
-
-
-
 app.use(morgan('dev'))
 
-app.get("/check/:zip", validateZip, (req, res, next) => {
+// zoos/all
+app.get("/zoos/all", (req, res) => {
+  const isAdmin = req.query.admin
+  const allZoos = getZoos()
+  const zooList = `All zoos: ${allZoos.join("; ")}`
+  const noAccess = `You do not have access to that route.`
+  
+  const message = isAdmin === "true" ? zooList : noAccess
+
+  res.send(message)
+})
+
+// /check/:zip
+app.get("/check/:zip", validateZip, (req, res) => {
   const zip = req.params.zip
   const zipZoos = getZoos(zip)
   const zipMatch = `${zip} exists in our records.`
@@ -34,8 +34,10 @@ app.get("/check/:zip", validateZip, (req, res, next) => {
   res.send(message)
 })
 
-app.get("/zoos/:zip", validateZip, (req, res) => {
+// zoos/:zip
+app.get("/zoos/:zip", validateZip, (req, res, next) => {
   const zip = req.params.zip
+  if (zip == "all") next()
   const zipZoos = getZoos(zip)
   const zooList = `${zip} zoos: ${getZoos(zip).join("; ")}`
   const noZoos = `${zip} has no zoos.`
@@ -45,20 +47,15 @@ app.get("/zoos/:zip", validateZip, (req, res) => {
   res.send(message)
 })
 
-app.get("/zoos/all?admin=true", (req, res) => {
-  
-  res.send(`All zoos goes here`)
-})
-
 // Not-found handler
 app.use((req, res, next) => {
-  res.send(`That route could not be found!`);
+  res.send(`That route could not be found!`)
 })
 
 // Error handler
 app.use((err, req, res, next) => {
-  console.error(err);
-  res.send(err);
+  console.error(err)
+  res.send(err)
 })
 
 module.exports = app
