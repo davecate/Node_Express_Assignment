@@ -5,6 +5,7 @@ const app = express()
 const getZoos = require("./utils/getZoos")
 
 // middleware
+// Qualified will yell at you for using morgan, remove to pass tests
 const morgan = require("morgan")
 const validateZip = require("./middleware/validateZip")
 
