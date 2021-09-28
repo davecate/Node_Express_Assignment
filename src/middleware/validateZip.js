@@ -1,3 +1,16 @@
-function validateZip(req, res, next) {}
+const  validateZip = (req, res, next) => {
+  
+  const zip = req.params.zip
+  const invalidMessage = `${zip} is invalid!`
 
-module.exports = validateZip;
+  if (isNaN(zip)) {
+    next(invalidMessage)
+  } else if (zip.length !== 5) {
+    next(invalidMessage)
+  } else {
+    next()
+  }
+
+}
+
+module.exports = validateZip
